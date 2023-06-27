@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Collapse from 'react-bootstrap/Collapse';
 
 const AddComment = ({ bookId, reviews }) => {
 
-    const [ review , setReview ] = useState("")
-    const [ rate , setRate ] = useState("")
+    const [open, setOpen] = useState(false)
+    const [review, setReview] = useState("")
+    const [rate, setRate] = useState("")
 
     const postComment = async () => {
         try {
@@ -31,37 +33,53 @@ const AddComment = ({ bookId, reviews }) => {
         }
     }
 
-    const sendReview = (e)=>{
+    const sendReview = (e) => {
         e.preventDefault();
 
-        if (review && rate){
+        if (review && rate) {
             postComment()
+            reviews()
         } else {
             alert("riempire tutti i campi")
         }
     }
+
     
 
     return (
-        <Form>
-            <Form.Group 
-                className="mb-3" 
-                onChange={(e)=>setReview(e.target.value)}
+        <>
+            <Button
+                className='btn-warning mb-2'
+                onClick={() => setOpen(!open)}
+                aria-controls="example-collapse-text"
+                aria-expanded={open}
             >
-                <Form.Label>Review</Form.Label>
-                <Form.Control type="text" />
-            </Form.Group>
-            <Form.Group 
-                className="mb-3" 
-                onChange={(e)=>setRate(e.target.value)}
-            >
-                <Form.Label>Rate</Form.Label>
-                <Form.Control type="number" min="1" max="5" placeholder='1 - 5' />
-            </Form.Group>
-            <Button variant="success" type="submit" onClick={sendReview}>
-                Send
+                Inserisci nuova recenzione
             </Button>
-        </Form>
+            <Collapse in={open}>
+            <Form className='border rounded-3 p-4 bg-light'>
+                <Form.Group
+                    className="mb-3"
+                    onChange={(e) => setReview(e.target.value)}
+                >
+                    <Form.Label>Review</Form.Label>
+                    <Form.Control type="text" />
+                </Form.Group>
+                <Form.Group
+                    className="mb-3"
+                    onChange={(e) => setRate(e.target.value)}
+                >
+                    <Form.Label>Rate</Form.Label>
+                    <Form.Control type="number" min="1" max="5" placeholder='1 - 5' />
+                </Form.Group>
+                <Button variant="success" type="submit" onClick={sendReview}>
+                    Send
+                </Button>
+            </Form>
+            </Collapse>
+
+           
+        </>
     )
 }
 

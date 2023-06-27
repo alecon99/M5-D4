@@ -52,7 +52,7 @@ const CommentArea = ({ setSelected, asin }) => {
                     </ul>
                     <AddComment 
                         bookId={asin}
-                        reviews={CommentArea} 
+                        reviews={getComment} 
                     />
                 </Modal.Body>
                 <Modal.Footer>
