@@ -1,46 +1,50 @@
-import React, { useEffect , useState } from 'react'
+import React, { useEffect , useState, useContext, createContext } from 'react'
 import Button from 'react-bootstrap/esm/Button'
-import Container from 'react-bootstrap/esm/Container'
 import Form from 'react-bootstrap/Form'
+import historyBooks from '../data/history.json'
+import { BooksContext } from '../context/BooksContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
-const SearchBar = ({books,setBooks,historyBooks}) => {
+const SearchBar = () => {
 
-const [ searchTerm , setSearchterm] = useState("")
+    const myBooksContext = useContext(BooksContext)
+    const { books, setBooks} = myBooksContext
 
-const filterBooks = (e) =>{
-    e.preventDefault();
+    const [searchTerm, setSearchterm] = useState("")
 
-    const filterBooks = books.filter((book)=>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filterBooks = (e) => {
+        e.preventDefault();
 
-    setBooks(filterBooks);   
-}
+        const filterBooks = books.filter((book) =>
+            book.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
-const searchResetBooks = (value)=> {
-    if(value === ""){
-        setBooks(historyBooks)
-    } else {
-        setSearchterm(value)
+        setBooks(filterBooks);
     }
+
+    const searchResetBooks = (value) => {
+        if (value === "") {
+            setBooks(historyBooks)
+        } else {
+            setSearchterm(value)
+        }
     }
 
-  return (
-    <Container>
-        <Form className='d-flex mb-3'>
-            <Form.Control
-                type='text' 
-                placeholder='search' 
-                onChange={(e)=> searchResetBooks(e.target.value)}
-            />
-            <Button 
-                onClick={filterBooks} 
-                type='submit'
-                className='ms-2 btn-dark'
-            >Cerca</Button>
+    return (
+            <Form className='d-flex'>
+                <Form.Control
+                    type='text'
+                    placeholder='search'
+                    onChange={(e) => searchResetBooks(e.target.value)}
+                />
+                <Button
+                    onClick={filterBooks}
+                    type='submit'
+                    className='btn-dark border'
+                ><FontAwesomeIcon icon={faMagnifyingGlass} style={{color: "#ffffff",}} /></Button>
 
-        </Form>
-    </Container>
-  )
+            </Form>
+    )
 }
 
 export default SearchBar

@@ -1,21 +1,45 @@
-import React from 'react'
+import { useContext, useEffect } from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import SearchBar from './SearchBar';
+import Button from 'react-bootstrap/esm/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMoon } from '@fortawesome/free-solid-svg-icons'
+import { ThemeContext } from '../context/ThemeContext';
 
 const NavigationBar = () => {
+
+  const myThemeContext = useContext(ThemeContext)
+  const { dark , toggleTheme } = myThemeContext
+
+  const toggleBg = ()=> {toggleTheme()}
+
+  useEffect(()=>{
+    if(dark){
+      document.body.className="dark-mode"
+    } else {
+      document.body.className="light-mode"
+    }
+  },[dark])
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-    <Container>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <Nav.Link href="#">Home</Nav.Link>
-          <Nav.Link href="#">About</Nav.Link>
-          <Nav.Link href="#">Browse</Nav.Link>
+    <Navbar className={`${dark? 'bg-dark' : 'bg-light'}`}>
+      <Container>
+        <Nav >
+          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">Home</Nav.Link>
+          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">About</Nav.Link>
+          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">Browse</Nav.Link>
         </Nav>
-      </Navbar.Collapse>
-    </Container>
+        <div className='d-flex'>
+          <SearchBar />
+          <Button
+            className='btn btn-dark border ms-3'
+            type='submit'
+            onClick={toggleBg}
+          ><FontAwesomeIcon icon={faMoon} /></Button>
+        </div>
+      </Container>
   </Navbar>
   )
 }

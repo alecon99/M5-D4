@@ -1,16 +1,25 @@
-import React from "react";
 import NavigationBar from "./components/NavigationBar";
 import MyFooter from "./components/MyFooter";
 import Welcome from "./components/Welcome";
-import LatestRelease from "./components/LatestRelease";
+import { createContext, useEffect, useState,useContext } from "react";
+import Main from "./components/Main";
+import { ThemeProvider } from "./context/ThemeContext";
+import { BooksProvider } from "./context/BooksContext";
+
+export const BookState = createContext()
 
 function App() {
+
   return (
     <>
-      <NavigationBar />
-      <Welcome />
-      <LatestRelease />
-      <MyFooter />
+        <ThemeProvider>
+          <BooksProvider>
+          <NavigationBar />
+          <Welcome />
+          <Main />
+          <MyFooter />
+          </BooksProvider>
+        </ThemeProvider>
     </>
   );
 }

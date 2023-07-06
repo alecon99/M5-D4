@@ -1,4 +1,5 @@
 import React from 'react'
+import RemoveComment from './RemoveComment'
 
 const CommentList = ({ author, comment, rate }) => {
     return (
@@ -7,7 +8,9 @@ const CommentList = ({ author, comment, rate }) => {
                 <div>User: {author}</div>
                 <div>Comment: {comment}</div>
                 <div >Rate: {rate}</div>
+                <RemoveComment/>
             </li>
+            
         </>
     )
 }

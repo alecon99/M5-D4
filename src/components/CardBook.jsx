@@ -1,16 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Card from 'react-bootstrap/Card';
-import CommentArea from './CommentArea';
+import { Selection } from './Main';
+import { ThemeContext } from '../context/ThemeContext';
 
 const CardBook = ({ img, title, price, asin }) => {
-    const [ selected , setSelected] = useState(false)
-    const toggleSelected = ()=> setSelected(!selected)
+
+    const myThemeContext = useContext(ThemeContext)
+    const { dark , toggleTheme } = myThemeContext
+    
+    const mySelection = useContext(Selection)
+    const { selected, setSelected} = mySelection
+    const [ animation , setAnimation ] = useState(null)
+
+    const toggleSelected = () => {
+        if(selected.id === asin){
+            setSelected({id:"vuoto",bookTitle:"vuoto"})
+            setAnimation("")
+        } else {
+            setSelected({id:`${asin}`,bookTitle:`${title}`})
+            setAnimation("yes")
+        }
+    }
 
     return (
         <>
             <Card
                 onClick={toggleSelected}
-                className={`${selected ? 'border border-2 border-danger shadow' : null}`}
+                className={`${animation ? 'opacity-75 border border-danger shadow' : null}`}
                 style={{ marginBottom: '10px' }}
             >
                 <Card.Img
@@ -20,7 +36,9 @@ const CardBook = ({ img, title, price, asin }) => {
                         height: "400px",
                         objectFit: "cover"
                     }} />
-                <Card.Body>
+                <Card.Body
+                    className={`${dark ? 'bg-secondary text-white' : null}`}
+                > 
                     <Card.Title
                         style={{
                             whiteSpace: "nowrap",
@@ -31,7 +49,6 @@ const CardBook = ({ img, title, price, asin }) => {
                     <Card.Text>€ {price}</Card.Text>
                 </Card.Body>
             </Card>
-            {selected && <CommentArea asin={asin} setSelected={setSelected}/>}
         </>
     )
 }
