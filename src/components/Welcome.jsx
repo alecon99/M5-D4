@@ -3,14 +3,16 @@ import { ThemeContext } from '../context/ThemeContext';
 
 const Welcome = () => {
 
-    const myThemeContext = useContext(ThemeContext)
-    const { dark , toggleTheme } = myThemeContext
+    const { dark } = useContext(ThemeContext)
     
     return (
-        <div className={`${dark ? "bg-dark text-white" : null}`} >
+        <div className={`${dark ? "bg-dark text-white" : "bg-light"}`} >
             <div className="container">
-                <h1 className="display-4">BookShoop</h1>
-                <p className="lead pb-3">È la libreria online dove acquistare libri, eBook, cd, dvd, videogiochi e idee regalo. Letture e intrattenimento per ogni occasione!
+                <h1 className="display-4">
+                    BookShoop
+                </h1>
+                <p className="lead pb-3">
+                    It is the online library where you can buy books, eBooks, CDs, DVDs, video games and gift ideas. Readings and entertainment for every occasion!
                 </p>
             </div>
         </div>

@@ -1,26 +1,38 @@
-import NavigationBar from "./components/NavigationBar";
-import MyFooter from "./components/MyFooter";
-import Welcome from "./components/Welcome";
-import { createContext, useEffect, useState,useContext } from "react";
-import Main from "./components/Main";
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import { ThemeProvider } from "./context/ThemeContext";
 import { BooksProvider } from "./context/BooksContext";
-
-export const BookState = createContext()
+import { SelectionProvider } from "./context/SelectionContext"
+import { GetBooksCommentProvider } from './context/GetBooksCommentContext';
+import HomePage from './pages/HomePage';
+import DetailPage from './pages/DetailPage';
+import NotFound from './pages/NotFound';
 
 function App() {
-
   return (
-    <>
-        <ThemeProvider>
-          <BooksProvider>
-          <NavigationBar />
-          <Welcome />
-          <Main />
-          <MyFooter />
-          </BooksProvider>
-        </ThemeProvider>
-    </>
+    <ThemeProvider>
+      <BooksProvider>
+        <SelectionProvider>
+          <GetBooksCommentProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route
+                  exact path='/'
+                  element={<HomePage />}
+                />
+                <Route
+                  path='/book/:bookAsin'
+                  element={<DetailPage />}
+                />
+                <Route
+                  path='*'
+                  element={<NotFound />}
+                />
+              </Routes>
+            </BrowserRouter>
+          </GetBooksCommentProvider>
+        </SelectionProvider>
+      </BooksProvider>
+    </ThemeProvider>
   );
 }
 

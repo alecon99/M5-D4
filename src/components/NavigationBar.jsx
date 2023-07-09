@@ -1,35 +1,41 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
+
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/esm/Button';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMoon } from '@fortawesome/free-solid-svg-icons'
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+
 import { ThemeContext } from '../context/ThemeContext';
+
+import { Link } from 'react-router-dom';
+
+import BooksSelector from './BooksSelector';
 
 const NavigationBar = () => {
 
-  const myThemeContext = useContext(ThemeContext)
-  const { dark , toggleTheme } = myThemeContext
+  const { dark, toggleTheme } = useContext(ThemeContext)
 
-  const toggleBg = ()=> {toggleTheme()}
-
-  useEffect(()=>{
-    if(dark){
-      document.body.className="dark-mode"
-    } else {
-      document.body.className="light-mode"
-    }
-  },[dark])
+  const toggleBg = () => { toggleTheme() }
 
   return (
-    <Navbar className={`${dark? 'bg-dark' : 'bg-light'}`}>
+    <Navbar 
+      className={`${dark ? 'bg-dark' : 'bg-light'}`} 
+      data-bs-theme={`${dark ? 'dark' : 'light'}`}
+    >
       <Container>
         <Nav >
-          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">Home</Nav.Link>
-          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">About</Nav.Link>
-          <Nav.Link className={`${dark ? 'text-white ' : null}`} href="#">Browse</Nav.Link>
+          <Link 
+            className='navbar-nav nav-link' 
+            to={"/"}
+          > 
+            Home
+          </Link>
+          <Nav.Link href="#">About</Nav.Link>
+          <BooksSelector/>
         </Nav>
         <div className='d-flex'>
           <SearchBar />
@@ -37,10 +43,12 @@ const NavigationBar = () => {
             className='btn btn-dark border ms-3'
             type='submit'
             onClick={toggleBg}
-          ><FontAwesomeIcon icon={faMoon} /></Button>
+          >
+            {dark ? <FontAwesomeIcon icon={faSun} /> : <FontAwesomeIcon icon={faMoon} />}
+          </Button>
         </div>
       </Container>
-  </Navbar>
+    </Navbar>
   )
 }
 

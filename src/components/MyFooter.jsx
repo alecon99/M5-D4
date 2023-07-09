@@ -1,10 +1,10 @@
 import {useContext} from "react";
+
 import { ThemeContext } from '../context/ThemeContext';
 
 const MyFooter = () => {
 
-    const myThemeContext = useContext(ThemeContext)
-    const { dark , toggleTheme } = myThemeContext
+    const { dark } = useContext(ThemeContext)
 
     return (
         <footer className="text-center text-lg-start text-muted">
@@ -16,7 +16,7 @@ const MyFooter = () => {
                                 <i className="fas fa-gem me-3"></i>BookShop
                             </h6>
                             <p>
-                                È la libreria online dove acquistare libri, eBook, cd, dvd, videogiochi e idee regalo. Letture e intrattenimento per ogni occasione!
+                            It is the online library where you can buy books, eBooks, CDs, DVDs, video games and gift ideas. Readings and entertainment for every occasion!
                             </p>
                         </div>
                         <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">

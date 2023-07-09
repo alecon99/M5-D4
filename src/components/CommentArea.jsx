@@ -1,72 +1,80 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
+
 import Modal from 'react-bootstrap/Modal'
+import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/esm/Button'
+
 import CommentList from './CommentList'
 import AddComment from './AddComment'
-import { Selection } from './Main'
-import RemoveComment from './RemoveComment'
+
+import { SelectionContext } from '../context/SelectionContext'
+import { GetBooksCommentContext } from '../context/GetBooksCommentContext'
 
 const CommentArea = ({ asin }) => {
 
-    const mySelection = useContext(Selection)
-    const { selected, setSelected} = mySelection
+    const { selected, setSelected } = useContext(SelectionContext)
 
-    const [bookComments, setBookComments] = useState([])
-
-    const getComment = async () => {
-        try {
-            const data = await fetch('https://striveschool-api.herokuapp.com/api/comments/' + selected.id,
-                {
-                    headers: {
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDdmNjA0MmI5YzBmNzAwMTQ0ODRmOTMiLCJpYXQiOjE2ODc1NDMwNzcsImV4cCI6MTY4ODc1MjY3N30.Jbqyx6hbchpUvyPRVhEQFursS7ggsmCruzpy6iRJdyw"
-                    }
-                })
-            const response = await data.json()
-            setBookComments(response)
-        } catch (err) {
-            console.log(err)
-        }
-    }
+    const { bookComments, getComment, isLoading } = useContext(GetBooksCommentContext)
 
     useEffect(() => {
         getComment()
     }, [selected])
 
+    const closeComments =() => {
+        setSelected({id:null,bookTitle:null})
+    }
+
     return (
         <div className='sticky-top pt-4'>
-            <Modal.Dialog centered size='lg' className='border p-2 bg-light rounded-2'>
+            <Modal.Dialog 
+                centered size='lg' 
+                className='border p-2 bg-white rounded-2'
+            >
                 <div className='my-1'>
+                    <div className={`text-end ${selected.id !== null && !isLoading ? "" : "d-none"}`}>
+                        <Button 
+                            onClick={closeComments} 
+                            className=' py-0 px-2 btn-danger'
+                        >
+                            X
+                        </Button>
+                    </div>
                     <Modal.Title>Comments:</Modal.Title>
                     <h4
-                        className={`m-4 text-center ${selected.id !== "vuoto" ? "" : "d-none"}`}
+                        className={`m-4 text-center ${selected.id !== null ? "" : "d-none"}`}
                     >
                         "{selected.bookTitle}"
                     </h4>
                 </div>
                 <h3
-                    className={`my-4 text-center  ${selected.id === "vuoto" ? "" : "d-none"}`}
+                    className={`my-4 text-center  ${selected.id === null ? "" : "d-none"}`}
                 >Seleziona un libro
                 </h3>
-
-                <Modal.Body
-                    className={`overflow-y-scroll my-2  ${selected.id !== "vuoto" ? "" : "d-none"}`}
-                    style={{ height: "400px" }}>
-                    <ul className='list-group'>
-                        {bookComments.map((comment) => {
-                            return (
-                                <CommentList
-                                    key={comment._id}
-                                    author={comment.author}
-                                    comment={comment.comment}
-                                    rate={comment.rate}
-                                />
-                            )
-                        })}
-                    </ul>
-                </Modal.Body>
-                {!selected ? null : <AddComment
-                    bookId={asin}
-                    reviews={getComment}
-                />}
+                <div className='text-center'>
+                    {isLoading ? <Spinner className="m-4" animation="border" /> : null}
+                </div>
+                <div className={`${selected.id !== null && !isLoading ? "" : "d-none"}`}>
+                    <Modal.Body
+                        className={`overflow-y-scroll my-2`}
+                        style={{ maxHeight: "350px" }}>
+                        <ul className='list-group'>
+                            {bookComments.map((comment) => {
+                                return (
+                                    <CommentList
+                                        key={comment._id}
+                                        id={comment._id}
+                                        author={comment.author}
+                                        comment={comment.comment}
+                                        rate={comment.rate}
+                                    />
+                                )
+                            })}
+                        </ul>
+                    </Modal.Body>
+                    <AddComment
+                        reviews={getComment}
+                    />
+                </div>
             </Modal.Dialog>
         </div>
     )

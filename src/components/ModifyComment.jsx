@@ -1,42 +1,54 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPencil } from '@fortawesome/free-solid-svg-icons'
+
 import { SelectionContext } from '../context/SelectionContext';
+import { GetBooksCommentContext } from '../context/GetBooksCommentContext'
 
-const AddComment = ({ reviews }) => {
+import { endpoint } from '../data/endpoint';
 
-    const mySelection = useContext(SelectionContext)
-    const { selected } = mySelection
+const ModifyComment = ({commentId, comment, rate}) => {
 
-    const [review, setReview] = useState("")
-    const [rate, setRate] = useState("")
+    const { getComment } = useContext(GetBooksCommentContext)
+
+    const { selected} = useContext(SelectionContext)
+
+    const [formReview, setFormReview] = useState("")
+    const [formRate, setFormRate] = useState("")
 
     const [show, setShow] = useState(false);
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+  
+    useEffect(() => {
+        setFormReview(comment)
+        setFormRate(rate)
+    }, [])
 
     const postComment = async () => {
         try {
             const payload = {
-                "comment": review,
-                "rate": rate,
+                "comment": formReview,
+                "rate": formRate,
                 "elementId": selected.id,
             };
-            const data = await fetch('https://striveschool-api.herokuapp.com/api/comments/',
+            const data = await fetch( endpoint[0].Url +commentId ,
                 {
-                    method: "POST",
+                    method: "PUT",
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGE4M2I1MTEyYjUwYzAwMTQ5ZTYzOGEiLCJpYXQiOjE2ODg3NDY4MzMsImV4cCI6MTY4OTk1NjQzM30.1888VQqvbcwhGFYqpRzI_IUmHhX6K_OJsBg8IPQkn04"
+                        "Authorization": endpoint[0].Token
                     }
                 })
-            setReview("")
-            setRate("")
+            handleClose()
+            getComment()
         } catch (err) {
             console.log(err)
         }
@@ -45,10 +57,8 @@ const AddComment = ({ reviews }) => {
     const sendReview = (e) => {
         e.preventDefault();
 
-        handleClose()
-        if (review && rate) {
+        if (formReview && formRate) {
             postComment()
-            reviews()
         } else {
             alert("riempire tutti i campi")
         }
@@ -56,11 +66,12 @@ const AddComment = ({ reviews }) => {
 
     return (
         <>
-            <Button
+            <Button 
+                variant="btn btn-dark m-1" 
                 onClick={handleShow}
-                className={`btn btn-success my-2 ${selected.id !== "vuoto" ? "" : "d-none"}`}
-            >
-                <FontAwesomeIcon icon={faPlus} /> add review
+                className={`${selected.id !== "vuoto" ? "" : "d-none"}`}
+                >
+                <FontAwesomeIcon icon={faPencil} />
             </Button>
             <Modal
                 show={show}
@@ -69,24 +80,23 @@ const AddComment = ({ reviews }) => {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Add new comment</Modal.Title>
+                    <Modal.Title>Modify comment</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form >
                         <Form.Group
                             className="mb-3"
-                            onChange={(e) => setReview(e.target.value)}
-
+                            onChange={(e) => setFormReview(e.target.value)}                            
                         >
                             <Form.Label>Review</Form.Label>
-                            <Form.Control type="text" />
+                            <Form.Control type="text" value={formReview}/>
                         </Form.Group>
                         <Form.Group
                             className="mb-3"
-                            onChange={(e) => setRate(e.target.value)}
+                            onChange={(e) => setFormRate(e.target.value)}
                         >
                             <Form.Label>Rate</Form.Label>
-                            <Form.Control type="number" min="1" max="5" placeholder='1 / 5' />
+                            <Form.Control type="number" min="1" max="5" placeholder='1 / 5'value={formRate} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -100,4 +110,4 @@ const AddComment = ({ reviews }) => {
     )
 }
 
-export default AddComment
+export default ModifyComment

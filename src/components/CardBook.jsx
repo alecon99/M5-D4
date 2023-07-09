@@ -1,33 +1,24 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import Card from 'react-bootstrap/Card';
-import { Selection } from './Main';
-import { ThemeContext } from '../context/ThemeContext';
+import { SelectionContext } from '../context/SelectionContext';
+import { Link } from 'react-router-dom'
+import Button from 'react-bootstrap/esm/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faComments, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 
 const CardBook = ({ img, title, price, asin }) => {
-
-    const myThemeContext = useContext(ThemeContext)
-    const { dark , toggleTheme } = myThemeContext
     
-    const mySelection = useContext(Selection)
-    const { selected, setSelected} = mySelection
-    const [ animation , setAnimation ] = useState(null)
+    const { setSelected} = useContext(SelectionContext)
 
-    const toggleSelected = () => {
-        if(selected.id === asin){
-            setSelected({id:"vuoto",bookTitle:"vuoto"})
-            setAnimation("")
-        } else {
-            setSelected({id:`${asin}`,bookTitle:`${title}`})
-            setAnimation("yes")
-        }
+    const buttonSetSelected = () => {
+        setSelected({id: asin, bookTitle:title})
     }
 
     return (
         <>
             <Card
-                onClick={toggleSelected}
-                className={`${animation ? 'opacity-75 border border-danger shadow' : null}`}
-                style={{ marginBottom: '10px' }}
+            className='overflow-hidden'
+                style={{ marginBottom: '10px'}}
             >
                 <Card.Img
                     variant="top"
@@ -35,18 +26,39 @@ const CardBook = ({ img, title, price, asin }) => {
                     style={{
                         height: "400px",
                         objectFit: "cover"
-                    }} />
+                    }} 
+                />
                 <Card.Body
-                    className={`${dark ? 'bg-secondary text-white' : null}`}
+                    className="p-0"
                 > 
-                    <Card.Title
-                        style={{
+                    <div className='p-2'>
+                        <Card.Title
+                            style={{
                             whiteSpace: "nowrap",
                             overflow: "hidden",
-                            textOverflow: "ellipsis"
-                        }}
-                    >{title}</Card.Title>
-                    <Card.Text>€ {price}</Card.Text>
+                            textOverflow: "ellipsis"}}
+                        >
+                            {title}
+                        </Card.Title>
+                        <Card.Text>
+                            € {price}
+                        </Card.Text>
+                    </div>
+                    <div className='row'>
+                        <Button 
+                            onClick={buttonSetSelected}
+                            className='btn-secondary rounded-0 col-6'
+                        >
+                            <FontAwesomeIcon icon={faComments} />
+                        </Button>
+                        <Link 
+                            onClick={buttonSetSelected}
+                            className='btn btn-dark rounded-0 col-6' 
+                            to={`/book/${asin}`}
+                        >
+                            <FontAwesomeIcon icon={faCircleInfo} />
+                        </Link>
+                    </div>
                 </Card.Body>
             </Card>
         </>
